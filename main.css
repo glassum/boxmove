@@ -1,0 +1,27 @@
+body {
+    display: flex;
+    height: 100vh;
+    background: #b3d4fc;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+section {
+    position: relative;
+    background: #FF0;
+    width: 80vw;
+    height: 80vh;
+}
+
+#child {
+    position: absolute;
+    width: 7rem;
+    height: 7rem;
+    background: #099;
+}
+
+#child:hover {
+    background: #0AA;
+}
