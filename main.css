@@ -17,9 +17,11 @@ body {
 
 #child {
     position: absolute;
-    width: 7rem;
-    height: 7rem;
+    width: 15rem;
+    height: 15rem;
     background: #099;
+    top: 10rem;
+    left: 10rem;
 }
 
 #child:hover {

@@ -1,27 +1,33 @@
-const child = document.getElementById("child");
-const parent = document.getElementById("parent");
+let child = document.getElementById("child");
+let parent = document.getElementById("parent");
+const checkLimits = (value, min, max) => value < min ? min : value > max ? max : value;
 
-function moveAt(elementX, elementY, shiftX, shiftY) {
-    let x = elementX - shiftX;
-    let y = elementY - shiftY;
-    const checkLimits = (value, min, max) => value < min ? min : value > max ? max : value;
-    x = checkLimits(x, parent.offsetLeft, parent.offsetLeft + parent.offsetWidth - child.offsetWidth);
-    y = checkLimits(y, parent.offsetTop, parent.offsetTop + parent.offsetHeight - child.offsetHeight);
-    child.style.left = x + "px";
-    child.style.top = y + "px";
-}
-
-child.ondragstart = () => false;
-child.onmousedown = event => {
-
+// Mouse events
+let isDown = false;
+child.addEventListener("mousedown", () => isDown = true);
+document.addEventListener("mouseup", () => isDown = false);
+document.addEventListener("mousemove", event => {
     event.preventDefault();
-    let shiftX = event.clientX - child.getBoundingClientRect().left;
-    let shiftY = event.clientY - child.getBoundingClientRect().top;
-    const onMouseMove = event => moveAt(event.pageX, event.pageY, shiftX, shiftY);
+    if (isDown) {
+        child.style.left = checkLimits(child.offsetLeft + event.movementX, 0, parent.offsetWidth - child.offsetWidth) + "px";
+        child.style.top = checkLimits(child.offsetTop + event.movementY, 0, parent.offsetHeight - child.offsetHeight) + "px";
+    }
+});
 
-    document.body.append(child);
-    document.onmouseup = () => document.removeEventListener("mousemove", onMouseMove); // free up all document events
-    document.addEventListener("mousemove", onMouseMove);
-    moveAt(event.pageX, event.pageY, shiftX, shiftY);
+// Touch events
+let globalX = 0;
+let globalY = 0;
+child.addEventListener("touchstart", event => {
+    globalX = event.changedTouches[0].pageX;
+    globalY = event.changedTouches[0].pageY;
+});
 
-};
+child.addEventListener("touchmove", event => {
+    event.preventDefault();
+    let deltaX = event.changedTouches[0].pageX - globalX;
+    let deltaY = event.changedTouches[0].pageY - globalY;
+    child.style.left = checkLimits(child.offsetLeft + deltaX, 0, parent.offsetWidth - child.offsetWidth) + "px";
+    child.style.top = checkLimits(child.offsetTop + deltaY, 0, parent.offsetHeight - child.offsetHeight) + "px";
+    globalX = event.changedTouches[0].pageX;
+    globalY = event.changedTouches[0].pageY;
+});
